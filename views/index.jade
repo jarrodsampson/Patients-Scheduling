@@ -1,0 +1,203 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    title Ukenol Patients - Planlodge
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='shortcut icon', type='image/png', href='/img/pill.png')
+    // Latest compiled and minified CSS
+    link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css', integrity='sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7', crossorigin='anonymous')
+    // Optional theme
+    link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css', integrity='sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r', crossorigin='anonymous')
+    link(rel='stylesheet', href='/stylesheets/ngToast.min.css')
+    link(rel='stylesheet', href='/stylesheets/ngToast-animations.min.css')
+    link(rel='stylesheet', href='//weareoutman.github.io/clockpicker/dist/jquery-clockpicker.min.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body(data-ng-app='PatientApp', ng-controller='PatientController', ng-cloak='')
+    header
+    main
+      .banner
+      .container-fluid
+        .page-header.row.col-md-12
+          h1
+            | Ukenol Patients&nbsp;
+            small Today's Schedule
+          blockquote
+            p Schedule for today's doctor visits.
+        .row.col-md-12
+          .form-group.col-md-3.no-padding.patientMessage
+            p {{patientsMessage}}
+          .form-group.col-md-5.no-padding
+            input.form-control(type='text', id='', placeholder='Search Patients..', ng-model='searchFilter')
+          .form-group.col-md-4.no-padding
+            a.btn.btn-danger.pull-right(data-toggle='modal', data-target='#new', data-backdrop='static')
+              span.glyphicon.glyphicon-plus(aria-hidden='true')
+              |  New Appointment
+          table.table.table-hover
+            th ID
+            th Name
+            th Check-In
+            th Note
+            th Actions
+            tr(data-ng-repeat="person in patientsFilter = (patients | filter: searchFilter | orderBy:'id')")
+              td {{person.id}}
+              td {{person.first}} {{person.last}}
+              td
+                span(ng-hide="person.editing == 'true'", ng-dblclick='editPatient(person)') {{person.time}}
+                span
+                  .form-group(ng-show="person.editing == 'true'")
+                    input(ng-model='person.time', ng-blur='doneEditing(person)', autofocus='')
+              td(style='width:40%;') {{person.note}}
+              td
+                a.btn.btn-warning(data-toggle='modal', data-target='#searchP', ng-click='viewPatient($index, person)')
+                  span.glyphicon.glyphicon-search(aria-hidden='true')
+                span &nbsp;
+                a.btn.btn-danger(ng-click='removePatient($index, person)')
+                  span.glyphicon.glyphicon-trash(aria-hidden='true')
+            tr(ng-if='patientsFilter.length < 1')
+              td No Patients found.
+      // normal Modal
+      #new.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel')
+        .modal-dialog(role='document')
+          .modal-content
+            .modal-header
+              button.close(type='button', data-dismiss='modal', aria-label='Close')
+                span(aria-hidden='true') ×
+              h4#myModalLabel.modal-title Schedule New Appointment
+            .modal-body
+              p Please fill out information below for a new appointment.
+              form(name='saveForm')
+                .form-group.col-md-6.no-padding
+                  input#first.form-control(required='', type='text', placeholder='First Name', ng-model='saveP.first')
+                .form-group.col-md-6.no-padding
+                  input#last.form-control(required='', type='text', placeholder='Last Name', ng-model='saveP.last')
+                .form-group
+                  textarea.form-control(required='', rows='3', placeholder='Note', ng-model='saveP.note')
+                .form-group
+                  input#email.form-control(required='', type='email', placeholder='E-Mail Address', ng-model='saveP.email')
+                .form-group
+                  #timePicker.input-group.date(data-default='now')
+                    input.form-control(required='', type='text', ng-model='saveP.time', placeholder='Scheduled Time')
+                    span.input-group-addon
+                      span.glyphicon.glyphicon-calendar
+            .modal-footer
+              button.btn.btn-default(type='button', data-dismiss='modal') Cancel
+              button.btn.btn-success(type='button', ng-disabled='saveForm.$invalid', ng-click='savePatient(saveP)') Save Appointment
+      // normal Modal
+      #searchP.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel')
+        .modal-dialog(role='document')
+          .modal-content
+            .modal-header
+              button.close(type='button', data-dismiss='modal', aria-label='Close')
+                span(aria-hidden='true') ×
+              h4#myModalLabel.modal-title {{viewer.firstName}} {{viewer.lastName}}
+            .modal-body
+              h2 ID: {{viewer.id}}
+              h3 {{viewer.address}}, {{viewer.city}} {{viewer.zip}}
+              h4 Scheduled Time: {{viewer.time}}
+              p {{viewer.note}}
+              p {{viewer.email}}
+              em {{viewer.phone}}
+            .modal-footer
+              button.btn.btn-info(type='button', data-dismiss='modal') Close
+    footer
+      toast
+    // jQuery (necessary for Bootstrap's JavaScript plugins)
+    script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js')
+    script(src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js', integrity='sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS', crossorigin='anonymous')
+    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js')
+    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-sanitize.min.js')
+    script(src='/js/ngToast.min.js')
+    script(src='//weareoutman.github.io/clockpicker/dist/jquery-clockpicker.min.js')
+    script.
+      var input = $('#timePicker');
+      var input2 = $('.timePickerEdit');
+      input.clockpicker({
+        autoclose: true
+      });
+      input2.clockpicker({
+        autoclose: true
+      });
+      $('[data-toggle="tooltip"]').tooltip();
+      var app = angular.module("PatientApp", ['ngAnimate','ngToast']); // module init
+      app.controller("PatientController", function($scope, $http, ngToast) { // controller init
+        $scope.patients = [];
+        $scope.patientsCount = 0;
+        $scope.patientsMessage = "";
+        $scope.viewer = {};
+        $http.get("/js/patient-data.json").then(function(response) {
+          $scope.patients = response.data;
+          $scope.patientsCount = $scope.patients.length;
+          console.log(response.data);
+          $scope.checkPatientCount();
+        }, function(response) {
+          alert('Could Not Fetch Data.');
+        });
+        $scope.removePatient = function (id, person) {
+          $scope.patients.splice(id, 1);
+          ngToast.create({
+            className: 'danger',
+            content: '<i class="fi-check"> Removed ' + person.first + ' ' + person.last + "."
+          });
+          --$scope.patientsCount;
+          $scope.checkPatientCount();
+        };
+        $scope.checkPatientCount = function () {
+          if ($scope.patientsCount == 0) {
+            $scope.patientsMessage = "No Patients scheduled today.";
+          } else if ($scope.patientsCount == 1) {
+            $scope.patientsMessage = $scope.patientsCount + " Patient scheduled today.";
+          } else if ($scope.patientsCount > 1) {
+            $scope.patientsMessage = $scope.patientsCount + " Patients scheduled today.";
+          }
+        };
+        $scope.savePatient = function (patient) {
+          console.log(patient);
+          var temp = {
+            "id": 139280,
+            "first": patient.first,
+            "last": patient.last,
+            "phone": "(01914) 549991",
+            "email": patient.email,
+            "address": "Ap #103-226 Enim Ave",
+            "city": "Poederlee",
+            "zip": "54-573",
+            "note": patient.note,
+            "time": patient.time + " PM",
+            "editing": "false"
+          }
+          $scope.patients.push(temp);
+          $('#new').modal('toggle');
+          ngToast.create({
+            className: 'success',
+            content: '<i class="fi-check">' + patient.first + ' has been added to the schedule.'
+          });
+          $scope.saveP = {};
+        };
+        $scope.viewPatient = function (id, patient) {
+          $scope.viewer.id = patient.id;
+          $scope.viewer.firstName = patient.first;
+          $scope.viewer.lastName = patient.last;
+          $scope.viewer.email = patient.email;
+          $scope.viewer.time = patient.time;
+          $scope.viewer.note = patient.note;
+          $scope.viewer.address = patient.address;
+          $scope.viewer.zip = patient.zip;
+          $scope.viewer.city = patient.city;
+          $scope.viewer.phone = patient.phone;
+          console.log("g");
+        };
+        $scope.editPatient = function (patient) {
+          patient.editing = "true";
+        };
+        $scope.doneEditing = function (patient, value) {
+          if (value != "") {
+            patient.editing = "false";
+            ngToast.create({
+              className: 'success',
+              content: '<i class="fi-check">' + patient.first + '\'s appointment has been updated.'
+          });
+          }
+        };
+      });
