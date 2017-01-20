@@ -1,6 +1,6 @@
 # Ukenol Patients
 
-Book Reservations for Milo SteakHouse in the city of Carson. KnockoutJS application styled with MaterializeCSS. Designed by [planlodge](http://planlodge.com).
+Schedule appointments for your Patients today at Ukenol. AngularJS application styled with Bootstrap using SASS. Designed by [planlodge](http://planlodge.com).
 
 [![Build Status](https://travis-ci.org/stevenbenner/jquery-powertip.svg?branch=master)](https://travis-ci.org/stevenbenner/jquery-powertip)
 ![License](https://img.shields.io/packagist/l/doctrine/orm.svg)
@@ -9,14 +9,14 @@ Book Reservations for Milo SteakHouse in the city of Carson. KnockoutJS applicat
 
 ## Description
 
-> It's dinner time and the family is hungry! All you need to do is make a reservation for this party and get some basic information on them. Make sure you jot down any notes they may have as well to make this dinner an excellent one.
+> It's friday and the weekend is quickly approaching. The list of scheduled appointments has become somewhat of a mess and your assistant as left for the weekend already. It's up to you to sort out which appointments have been completed already and which ones need to be cancelled. Hurry hurry, patients show up at all sorts of hours with different needs!
 
 ## Features
-- Add new guests to reservation
-- Remove anyone who needs to cancel
-- Search through reservation names
-- Process and submit this table to the main reservation list
-- Take notes on each reservations and get detailed information
+- Add new appointments to your schedule
+- Remove appointments that were cancelled or made by mistake
+- Search through existing appointments by name
+- Edit existing appointments and resechedule times if necessary.
+- Take notes on each appointment to help remember which patient needs what
 
 ## License
 
